@@ -41,7 +41,7 @@ if uploaded_file:
 
     # AI-Powered Data Insights
     st.subheader("Ask AI About Your Data")
-    ai_query = st.text_area("What do you want to know?", "Summarize this dataset")
+    ai_query = st.text_area("What do you want to know?")
 
     if st.button("Get AI Insights"):
         try:
@@ -64,7 +64,7 @@ if uploaded_file:
 
     # SQL Query Execution Section
     st.subheader("Run SQL Queries on Data")
-    query = st.text_area("Write your SQL query here", "SELECT * FROM df LIMIT 5")
+    query = st.text_area("Write your SQL query here")
 
     if st.button("Run SQL Query"):
         try:
