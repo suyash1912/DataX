@@ -1,5 +1,7 @@
 import os
 import streamlit as st
+st.set_page_config(page_title="DataX - AI Data Analyzer", layout="wide")  # ✅ First Streamlit command
+
 import pandas as pd
 import plotly.express as px
 from openai import OpenAI
@@ -21,7 +23,7 @@ else:
     )
 
 # Streamlit UI Setup
-st.set_page_config(page_title="DataX - AI Data Analyzer", layout="wide")
+
 
 st.title(" DataX: AI-Powered Data Analyzer")
 
