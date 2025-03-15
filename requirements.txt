@@ -6,4 +6,5 @@ streamlit
 plotly
 pandasql
 python-dotenv
+openai
 OpenAI
