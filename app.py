@@ -39,53 +39,79 @@ if uploaded_file:
     st.write("Column Names for Reference")
     st.code(", ".join(f'"{col}"' for col in df.columns), language="sql")
 
-    # AI-Powered Data Insights
-    st.subheader("Ask AI About Your Data")
-    ai_query = st.text_area("What do you want to know?")
+    # Organizing Layout with 50:50 division
+    st.write("---")
+    col1, col2 = st.columns([1, 1])  # 50:50 column division
 
-    if st.button("Get AI Insights"):
-        try:
-            response = client.chat.completions.create(
-                model="meta-llama/Meta-Llama-3.1-70B-Instruct",
-                max_tokens=512,
-                temperature=0.6,
-                top_p=0.9,
-                extra_body={"top_k": 50},
-                messages=[
-                    {"role": "system", "content": "You are an expert data analyst."},
-                    {"role": "user", "content": f"Analyze the following dataset and answer this query: {ai_query}\n\n{df.head(10).to_string()}"}
-                ]
-            )
-            st.write("### AI Response")
-            st.write(response.choices[0].message.content)
+    with col1:
+        # AI Insights Section
+        st.subheader("Ask AI About Your Data")
+        ai_query = st.text_area("What do you want to know?")
+        if st.button("Get AI Insights"):
+            try:
+                response = client.chat.completions.create(
+                    model="meta-llama/Meta-Llama-3.1-70B-Instruct",
+                    max_tokens=512,
+                    temperature=0.6,
+                    top_p=0.9,
+                    extra_body={"top_k": 50},
+                    messages=[
+                        {"role": "system", "content": "You are an expert data analyst."},
+                        {"role": "user", "content": f"Analyze the following dataset and answer this query: {ai_query}\n\n{df.head(10).to_string()}"}
+                    ]
+                )
+                st.write("### AI Response")
+                st.write(response.choices[0].message.content)
 
-        except Exception as e:
-            st.error(f"Error: {e}")
+            except Exception as e:
+                st.error(f"Error: {e}")
+    
+    with col2:
+        # SQL Query Section
+        st.subheader("Run SQL Queries on Data")
+        query = st.text_area("Write your SQL query here")
+        if st.button("Run SQL Query"):
+            try:
+                # Execute SQL query on DataFrame
+                query_result = sqldf(query, {"df": df})
 
-    # SQL Query Execution Section
-    st.subheader("Run SQL Queries on Data")
-    query = st.text_area("Write your SQL query here")
+                # Display Results
+                st.write("### Query Results")
+                st.dataframe(query_result)
 
-    if st.button("Run SQL Query"):
-        try:
-            # Execute SQL query on DataFrame
-            query_result = sqldf(query, {"df": df})
+                # Visualization Option
+                if st.checkbox("Visualize Query Result"):
+                    columns = query_result.columns.tolist()
+                    x_axis = st.selectbox("Select X-axis", columns)
+                    y_axis = st.selectbox("Select Y-axis", columns)
 
-            # Display Results
-            st.write("### Query Results")
-            st.dataframe(query_result)
+                    fig = px.bar(query_result, x=x_axis, y=y_axis, title="SQL Query Visualization")
+                    st.plotly_chart(fig)
 
-            # Visualization Option
-            if st.checkbox("Visualize Query Result"):
-                columns = query_result.columns.tolist()
-                x_axis = st.selectbox("Select X-axis", columns)
-                y_axis = st.selectbox("Select Y-axis", columns)
+            except Exception as e:
+                st.error(f"Error in SQL Query: {e}")
 
-                fig = px.bar(query_result, x=x_axis, y=y_axis, title="SQL Query Visualization")
-                st.plotly_chart(fig)
+    # Additional Visualization Section (Global for the Data)
+    st.write("---")
+    st.subheader("Visualize Your Data")
+    visualize_option = st.selectbox("Select Chart Type", ["Bar Chart", "Line Chart", "Pie Chart", "Scatter Plot"])
 
-        except Exception as e:
-            st.error(f"Error in SQL Query: {e}")
+    column = st.selectbox("Select Column for Visualization", df.columns)
+
+    if visualize_option == "Bar Chart":
+        fig = px.bar(df, x=column, title=f"Bar Chart of {column}")
+        st.plotly_chart(fig)
+    elif visualize_option == "Line Chart":
+        fig = px.line(df, x=column, title=f"Line Chart of {column}")
+        st.plotly_chart(fig)
+    elif visualize_option == "Pie Chart":
+        fig = px.pie(df, names=column, title=f"Pie Chart of {column}")
+        st.plotly_chart(fig)
+    elif visualize_option == "Scatter Plot":
+        scatter_x = st.selectbox("Select X-axis for Scatter Plot", df.columns)
+        scatter_y = st.selectbox("Select Y-axis for Scatter Plot", df.columns)
+        fig = px.scatter(df, x=scatter_x, y=scatter_y, title=f"Scatter Plot of {scatter_x} vs {scatter_y}")
+        st.plotly_chart(fig)
 
 # Footer
 st.markdown("---")
