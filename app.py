@@ -12,7 +12,7 @@ load_dotenv()
 # Initialize Nebius AI client with Meta-Llama 3.1 70B Instruct
 client = OpenAI(
     base_url="https://api.studio.nebius.com/v1/",
-    api_key=os.getenv("NEBIUS_API_KEY")
+    api_key=st.secrets["NEBIUS_API_KEY"]  # Fetch from Streamlit secrets
 )
 
 # Streamlit UI Setup
