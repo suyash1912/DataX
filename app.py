@@ -10,10 +10,15 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # Initialize Nebius AI client with Meta-Llama 3.1 70B Instruct
-client = OpenAI(
-    base_url="https://api.studio.nebius.com/v1/",
-    api_key=st.secrets["NEBIUS_API_KEY"]  # Fetch from Streamlit secrets
-)
+api_key = st.secrets.get("NEBIUS_API_KEY", os.getenv("NEBIUS_API_KEY"))  
+
+if not api_key:
+    st.error("🚨 API Key is missing! Set it in Streamlit Secrets or as an environment variable.")
+else:
+    client = OpenAI(
+        base_url="https://api.studio.nebius.com/v1/",
+        api_key=api_key
+    )
 
 # Streamlit UI Setup
 st.set_page_config(page_title="DataX - AI Data Analyzer", layout="wide")
