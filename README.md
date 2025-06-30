@@ -14,20 +14,12 @@
 
 ---
 
-## 📂 Repo Contents
 
-/
-├── app.py # Main Streamlit app
-├── template.py # Custom profiling/analysis templates
-├── check_secrets.py # Utility to find sensitive info in code
-├── requirements.txt # Project dependencies
-├── LICENSE # MIT open-source license
-└── .gitignore
 
 
 ---
 
- Usage:
+ **Usage:**
 Launch the Streamlit app with:
 
 streamlit run app.py
